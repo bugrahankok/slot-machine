@@ -17,7 +17,6 @@ import time
 import sqlite3
 
 try:
-    # SQLite veritabanına bağlan
     conn = sqlite3.connect('slot_machine.sqlite3')
 
     cur = conn.cursor()
@@ -25,9 +24,9 @@ try:
     print("Veritabanına başarıyla bağlandı.")
 
 except sqlite3.Error as e:
-    print("SQLite Hatası:", e)
+    print("Veritabanına bağlanılamadı!", e)
 
-payout = { # payout rates
+payout = { 
     "1_bronze" : 0.5,
     "2_bronze" : 1,
     "3_bronze" : 3,
@@ -53,6 +52,7 @@ def check_winner(winner_symbols, bet):
         bet = bet * payout.get("3_diamond")
         print(f"WIN:{bet}")
         balance = balance  + bet 
+        
         return
     
     elif has_nested_list(winner_symbols, gold) >= 1:
@@ -61,6 +61,8 @@ def check_winner(winner_symbols, bet):
         bet = bet * payout.get("3_gold")
         print(f"WIN: {bet}")
         balance = balance + bet
+        print(f"Kazandığınız Para: {bet}")
+        print(f"Güncel Bakiyeniz: {balance}")
         return 
 
     diamond_count = winner_symbols.count("\U0001F48E")
@@ -79,45 +81,49 @@ def check_winner(winner_symbols, bet):
         print(winner_symbols)
         print("\U0001F3C6 jackpot")
         bet = bet * payout.get("3_gold")
-        print(bet)
+        print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
+        print(f"Güncel Bakiyeniz: {balance}")
+
 
     elif silver_count == 3:
         print(winner_symbols)
         print("\U0001F948 jackpot")
-        bet = bet * payout.get("3_silver")
-        print(bet)
+        bet = bet * payout.get("3_silver")        
+        print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
+        print(f"Güncel Bakiyeniz: {balance}")
+
 
     elif bronze_count == 3:
         print(winner_symbols)
         print("\U0001F949 jackpot")
         bet = bet * payout.get("3_bronze")
-        print(bet)
+        print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
+        print(f"Güncel Bakiyeniz: {balance}")
 
     elif bronze_count == 2:
         print(winner_symbols)
         print("\U0001F949 pair")
         bet = bet * payout.get("2_bronze")
-        print(bet)
+        print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
+        print(f"Güncel Bakiyeniz: {balance}")
         
     elif bronze_count == 1:
         print(winner_symbols)
         print("\U0001F949 win")
         bet = bet * payout.get("1_bronze")
-        print(bet)
+        print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
+        print(f"Güncel Bakiyeniz: {balance}")
 
     else:
         print(winner_symbols)
         print("No wins for today huh?")
         balance = balance - bet
         
-
-    print(balance)
-    return balance
 
 
 def animation():
@@ -179,13 +185,11 @@ while True:
     password_details = cur.fetchone()
     if name_details and password_details:
         user_name = name_details[0]
-        print(user_name)
         password = password_details[1]
-        print(password)
-        print("giriş başarıyla tamamlandı")
+        time.sleep(1)
+        print("Giriş başarıyla tamamlandı")
         cur.execute('SELECT balance FROM user WHERE name = ? and password = ?', (user_name, password))
         balance = cur.fetchone()[0]
-        print(balance)
     else:
         print("Geçersiz kullanıcı adı!")
         break 
@@ -220,3 +224,4 @@ if conn:
 
 # oyun menusu acildiginda payout tablosu yazdirmamiz lazim!!!!!!  (Eklendi)
 # diamond_count degiskeni kullanilmiyor onunla ne yapacagima dair bir fikrim yok  (Düzeltildi)
+
