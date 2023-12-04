@@ -168,14 +168,20 @@ while True:
     print("Winning Rates:")
     display_payout_table(payout)  
     print("---------------")
-    login = str(input("Enter Your Username: "))
-    cur.execute('SELECT * FROM user WHERE name = ?', (login,))
-    login_detail = cur.fetchone()
-    if login_detail:
-        user_name = login_detail[0]
+    login_name = str(input("Enter Your Username: "))
+    login_password = input("Enter Your Password: ")
+    cur.execute('SELECT * FROM user WHERE name = ?', (login_name,))
+    name_details = cur.fetchone()
+    cur.execute('SELECT * FROM user WHERE password = ?', (login_password,))
+    password_details = cur.fetchone()
+    if name_details and password_details:
+        user_name = name_details[0]
+        print(user_name)
+        password = password_details[1]
+        print(password)
         print("giriş başarıyla tamamlandı")
-        cur.execute('SELECT balance FROM user WHERE name = ?', (user_name,))
-        balance = cur.fetchone()[0]
+        cur.execute('SELECT balance FROM user WHERE name = ? and password = ?', (user_name, password))
+        balance = cur.fetchone()
         print(balance)
     else:
         print("Geçersiz kullanıcı adı!")
