@@ -12,7 +12,7 @@
 3 diamond: 1000
 """
 
-import random 
+import random
 import time
 import sqlite3
 
@@ -26,13 +26,13 @@ try:
 except sqlite3.Error as e:
     print("Veritabanına bağlanılamadı!", e)
 
-payout = { 
-    "1_bronze" : 0.5,
-    "2_bronze" : 1,
-    "3_bronze" : 3,
-    "3_silver" : 10,
-    "3_gold" : 20,
-    "3_diamond" : 1000
+payout = {
+    "1_bronze": 0.5,
+    "2_bronze": 1,
+    "3_bronze": 3,
+    "3_silver": 10,
+    "3_gold": 20,
+    "3_diamond": 1000
 }
 
 diamond = ["\U0001F48E", "\U0001F48E", "\U0001F48E"]
@@ -40,10 +40,13 @@ gold = ["\U0001F3C6", "\U0001F3C6", "\U0001F3C6"]
 symbols = ["\U0001F48E", "\U0001F3C6", "\U0001F948", "\U0001F949", gold, diamond]
 fake_symbols = ["\U0001F48E", "\U0001F3C6", "\U0001F948", "\U0001F949"]
 
+user_id = 0
 balance = 0
+
 
 def has_nested_list(lst, sublist_name):
     return any(isinstance(item, list) and item == sublist_name for item in lst)
+
 
 def check_winner(winner_symbols, bet):
     global balance
@@ -51,10 +54,10 @@ def check_winner(winner_symbols, bet):
         print("\U0001F48E, \U0001F48E, \U0001F48E \n HUGE Jackpot!")
         bet = bet * payout.get("3_diamond")
         print(f"WIN:{bet}")
-        balance = balance  + bet 
-        
+        balance = balance + bet
+
         return
-    
+
     elif has_nested_list(winner_symbols, gold) >= 1:
         print(winner_symbols)
         print("\U0001F3C6,\U0001F3C6,\U0001F3C6 Jackpot!")
@@ -63,7 +66,7 @@ def check_winner(winner_symbols, bet):
         balance = balance + bet
         print(f"Kazandığınız Para: {bet}")
         print(f"Güncel Bakiyeniz: {balance}")
-        return 
+        return
 
     diamond_count = winner_symbols.count("\U0001F48E")
     gold_count = winner_symbols.count("\U0001F3C6")
@@ -75,7 +78,7 @@ def check_winner(winner_symbols, bet):
         print("HUGE JACKPOT!")
         bet = bet * payout.get("3_diamond")
         print(f"WIN:{bet}")
-        balance = balance  + bet
+        balance = balance + bet
 
     elif gold_count == 3:
         print(winner_symbols)
@@ -89,7 +92,7 @@ def check_winner(winner_symbols, bet):
     elif silver_count == 3:
         print(winner_symbols)
         print("\U0001F948 jackpot")
-        bet = bet * payout.get("3_silver")        
+        bet = bet * payout.get("3_silver")
         print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
         print(f"Güncel Bakiyeniz: {balance}")
@@ -110,7 +113,7 @@ def check_winner(winner_symbols, bet):
         print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
         print(f"Güncel Bakiyeniz: {balance}")
-        
+
     elif bronze_count == 1:
         print(winner_symbols)
         print("\U0001F949 win")
@@ -123,16 +126,16 @@ def check_winner(winner_symbols, bet):
         print(winner_symbols)
         print("No wins for today huh?")
         balance = balance - bet
-        
 
 
 def animation():
     for i in range(5):
         time.sleep(0.3)
-        slot1 = random.choices(fake_symbols, weights = (11, 10, 10, 10))
-        slot2 = random.choices(fake_symbols, weights = (11, 10, 10, 10))
-        slot3 = random.choices(fake_symbols, weights = (11, 10, 10, 10))
-        print("|"+ slot1[0] +"|"+ slot2[0] +"|"+ slot3[0] +"|")
+        slot1 = random.choices(fake_symbols, weights=(11, 10, 10, 10))
+        slot2 = random.choices(fake_symbols, weights=(11, 10, 10, 10))
+        slot3 = random.choices(fake_symbols, weights=(11, 10, 10, 10))
+        print("|" + slot1[0] + "|" + slot2[0] + "|" + slot3[0] + "|")
+
 
 def slot():
     global balance
@@ -140,21 +143,22 @@ def slot():
     bet = input("Enter your bet:")
 
     if bet.isdigit():
-     bet = int(bet)
+        bet = int(bet)
 
-     if bet > balance:
-        print("Insufficient amount!")
+        if bet > balance:
+            print("Insufficient amount!")
 
-     else:
-        print(f"Your bet: {bet}")
-        print("Machine started!")
-        animation()
-        winner_symbols = random.choices(symbols, weights = (11, 10, 10, 10, 3, 1), k=3)
-        check_winner(winner_symbols, bet)
+        else:
+            print(f"Your bet: {bet}")
+            print("Machine started!")
+            animation()
+            winner_symbols = random.choices(symbols, weights=(11, 10, 10, 10, 3, 1), k=3)
+            check_winner(winner_symbols, bet)
 
     else:
         print("Invalid bet!")
-        
+
+
 def add_balance():
     global balance
     amount = input("How much you want to deposit:")
@@ -167,49 +171,55 @@ def add_balance():
     else:
         print("Invalid amount!")
 
+
 def display_payout_table(payout):
     for key, value in payout.items():
         formatted_key = key.replace("_", " ").capitalize()
         print(f"{formatted_key} : {value}")
 
+
+def login(username, password):
+    global user_id
+    global balance
+    cur.execute('SELECT * FROM user WHERE username = ? and password = ?', (username, password))
+    user_details = cur.fetchone()
+    if user_details is not None:
+        user_id = user_details[0]
+        time.sleep(1)
+        print("Giriş başarıyla tamamlandı")
+        balance = user_details[3]
+    else:
+        print("Geçersiz kullanıcı adı!")
+        exit()
+
+
 while True:
     print()
     print("Winning Rates:")
-    display_payout_table(payout)  
+    display_payout_table(payout)
     print("---------------")
     login_name = str(input("Enter Your Username: "))
     login_password = input("Enter Your Password: ")
-    cur.execute('SELECT * FROM user WHERE name = ?', (login_name,))
-    name_details = cur.fetchone()
-    cur.execute('SELECT * FROM user WHERE password = ?', (login_password,))
-    password_details = cur.fetchone()
-    if name_details and password_details:
-        user_name = name_details[0]
-        password = password_details[1]
-        time.sleep(1)
-        print("Giriş başarıyla tamamlandı")
-        cur.execute('SELECT balance FROM user WHERE name = ? and password = ?', (user_name, password))
-        balance = cur.fetchone()[0]
-    else:
-        print("Geçersiz kullanıcı adı!")
-        break 
-    menu_choice = input("1.Play\n2.Add Balance\n3.Exit\n")
-    
-    if menu_choice == "1":
-             while True:
-                slot()
-                again = input("again?(n to quit, anykey to continue):").lower()
 
-                if again == "n":
-                   break
-             
-                else:
-                   pass
+    login(login_name, login_password)
+
+    menu_choice = input("1.Play\n2.Add Balance\n3.Exit\n")
+
+    if menu_choice == "1":
+        while True:
+            slot()
+            again = input("again?(n to quit, any key to continue):").lower()
+
+            if again == "n":
+                break
+
+            else:
+                pass
 
     elif menu_choice == "2":
         add_balance()
 
-    elif menu_choice =="3":
+    elif menu_choice == "3":
         for i in "Good Bye!":
             time.sleep(0.13)
             print(i)
@@ -219,9 +229,8 @@ while True:
         print("Invalid Option!")
 
 if conn:
-        conn.close()
-        print("Bağlantı kapatıldı.")
+    conn.close()
+    print("Bağlantı kapatıldı.")
 
 # oyun menusu acildiginda payout tablosu yazdirmamiz lazim!!!!!!  (Eklendi)
 # diamond_count degiskeni kullanilmiyor onunla ne yapacagima dair bir fikrim yok  (Düzeltildi)
-
