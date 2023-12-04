@@ -55,7 +55,8 @@ def check_winner(winner_symbols, bet):
         bet = bet * payout.get("3_diamond")
         print(f"WIN:{bet}")
         balance = balance + bet
-
+        cur.execute("UPDATE user SET balance = ? WHERE id = ?", (balance, user_id))
+        conn.commit()
         return
 
     elif has_nested_list(winner_symbols, gold) >= 1:
@@ -66,6 +67,8 @@ def check_winner(winner_symbols, bet):
         balance = balance + bet
         print(f"Kazandığınız Para: {bet}")
         print(f"Güncel Bakiyeniz: {balance}")
+        cur.execute("UPDATE user SET balance = ? WHERE id = ?", (balance, user_id))
+        conn.commit()
         return
 
     diamond_count = winner_symbols.count("\U0001F48E")
@@ -79,6 +82,8 @@ def check_winner(winner_symbols, bet):
         bet = bet * payout.get("3_diamond")
         print(f"WIN:{bet}")
         balance = balance + bet
+        cur.execute("UPDATE user SET balance = ? WHERE id = ?", (balance, user_id))
+        conn.commit()
 
     elif gold_count == 3:
         print(winner_symbols)
@@ -87,7 +92,8 @@ def check_winner(winner_symbols, bet):
         print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
         print(f"Güncel Bakiyeniz: {balance}")
-
+        cur.execute("UPDATE user SET balance = ? WHERE id = ?", (balance, user_id))
+        conn.commit()
 
     elif silver_count == 3:
         print(winner_symbols)
@@ -96,7 +102,8 @@ def check_winner(winner_symbols, bet):
         print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
         print(f"Güncel Bakiyeniz: {balance}")
-
+        cur.execute("UPDATE user SET balance = ? WHERE id = ?", (balance, user_id))
+        conn.commit()
 
     elif bronze_count == 3:
         print(winner_symbols)
@@ -105,6 +112,8 @@ def check_winner(winner_symbols, bet):
         print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
         print(f"Güncel Bakiyeniz: {balance}")
+        cur.execute("UPDATE user SET balance = ? WHERE id = ?", (balance, user_id))
+        conn.commit()
 
     elif bronze_count == 2:
         print(winner_symbols)
@@ -113,6 +122,7 @@ def check_winner(winner_symbols, bet):
         print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
         print(f"Güncel Bakiyeniz: {balance}")
+        cur.execute("UPDATE user SET balance = ? WHERE id = ?", (balance, user_id))
 
     elif bronze_count == 1:
         print(winner_symbols)
@@ -121,11 +131,15 @@ def check_winner(winner_symbols, bet):
         print(f"Kazandığınız Para: {bet}")
         balance = balance + bet
         print(f"Güncel Bakiyeniz: {balance}")
+        cur.execute("UPDATE user SET balance = ? WHERE id = ?", (balance, user_id))
+        conn.commit()
 
     else:
         print(winner_symbols)
         print("No wins for today huh?")
         balance = balance - bet
+        cur.execute("UPDATE user SET balance = ? WHERE id = ?", (balance, user_id))
+        conn.commit()
 
 
 def animation():
