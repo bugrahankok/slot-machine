@@ -41,6 +41,8 @@ gold = ["\U0001F3C6", "\U0001F3C6", "\U0001F3C6"]
 symbols = ["\U0001F48E", "\U0001F3C6", "\U0001F948", "\U0001F949", gold, diamond]
 fake_symbols = ["\U0001F48E", "\U0001F3C6", "\U0001F948", "\U0001F949"]
 
+balance = 0
+
 def has_nested_list(lst, sublist_name):
     return any(isinstance(item, list) and item == sublist_name for item in lst)
 
@@ -127,6 +129,7 @@ def animation():
         print("|"+ slot1[0] +"|"+ slot2[0] +"|"+ slot3[0] +"|")
 
 def slot():
+    global balance
     print(f"Balance:{balance}")
     bet = input("Enter your bet:")
 
@@ -181,7 +184,7 @@ while True:
         print(password)
         print("giriş başarıyla tamamlandı")
         cur.execute('SELECT balance FROM user WHERE name = ? and password = ?', (user_name, password))
-        balance = cur.fetchone()
+        balance = cur.fetchone()[0]
         print(balance)
     else:
         print("Geçersiz kullanıcı adı!")
