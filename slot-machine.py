@@ -206,17 +206,15 @@ def login(username, password):
         print("Geçersiz kullanıcı adı!")
         exit()
 
+login_name = str(input("Enter Your Username: "))
+login_password = input("Enter Your Password: ")
+login(login_name, login_password)
 
 while True:
     print()
     print("Winning Rates:")
     display_payout_table(payout)
     print("---------------")
-    login_name = str(input("Enter Your Username: "))
-    login_password = input("Enter Your Password: ")
-
-    login(login_name, login_password)
-
     menu_choice = input("1.Play\n2.Add Balance\n3.Exit\n")
 
     if menu_choice == "1":
